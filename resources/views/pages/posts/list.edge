@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Liste des Posts - Mon Blog</title>
+
+    <link rel="preconnect" href="https://fonts.bunny.net" />
+    <link
+      href="https://fonts.bunny.net/css?family=instrument-sans:400,400i,500,500i,600,600i,700,700i"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --sand-1: #fdfdfc;
+        --sand-2: #f9f9f8;
+        --sand-3: #f1f0ef;
+        --sand-4: #e9e8e6;
+        --sand-5: #e2e1de;
+        --sand-6: #dad9d6;
+        --sand-7: #cfceca;
+        --sand-8: #bcbbb5;
+        --sand-9: #8d8d86;
+        --sand-10: #82827c;
+        --sand-11: #63635e;
+        --sand-12: #21201c;
+      }
+    </style>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [ "Instrument Sans", "sans-serif" ]
+            },
+            colors: {
+              primary: {
+                DEFAULT: "#5A45FF",
+                lighter: "#a599ff"
+              },
+              sand: {
+                1: "var(--sand-1)",
+                2: "var(--sand-2)",
+                3: "var(--sand-3)",
+                4: "var(--sand-4)",
+                5: "var(--sand-5)",
+                6: "var(--sand-6)",
+                7: "var(--sand-7)",
+                8: "var(--sand-8)",
+                9: "var(--sand-9)",
+                10: "var(--sand-10)",
+                11: "var(--sand-11)",
+                12: "var(--sand-12)"
+              }
+            }
+          }
+        }
+      };
+    </script>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('dumper')
+  </head>
+  <body class="min-h-screen w-screen font-sans bg-sand-1">
+    {{-- Menu de navigation --}}
+    <nav class="bg-white/80 backdrop-blur-sm border-b border-sand-4 sticky top-0 z-50">
+      <div class="max-w-screen-xl mx-auto px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center space-x-8">
+            <a href="/" class="flex items-center space-x-2">
+              <div class="w-8 h-8 bg-primary/20 rounded-lg flex justify-center items-center">
+                <svg class="w-5 h-5 fill-primary" viewBox="0 0 24 24">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                </svg>
+              </div>
+              <span class="font-semibold text-sand-12">Mon Blog</span>
+            </a>
+          </div>
+          
+          <div class="hidden md:flex items-center space-x-6">
+            <a href="/" class="text-sand-11 hover:text-primary transition-colors font-medium">Accueil</a>
+            <a href="/posts" class="text-primary font-medium">Articles</a>
+            <a href="/projets" class="text-sand-11 hover:text-primary transition-colors font-medium">Projets</a>
+            <a href="/tutoriels" class="text-sand-11 hover:text-primary transition-colors font-medium">Tutoriels</a>
+            <a href="/a-propos" class="text-sand-11 hover:text-primary transition-colors font-medium">À propos</a>
+            <a href="/blogs/add" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-lighter transition-colors font-medium">
+              Nouveau Post
+            </a>
+          </div>
+
+          {{-- Menu mobile --}}
+          <div class="md:hidden">
+            <button type="button" class="text-sand-11 hover:text-primary" id="mobile-menu-button">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {{-- Menu mobile déroulant --}}
+        <div class="md:hidden hidden" id="mobile-menu">
+          <div class="py-4 space-y-2 border-t border-sand-4">
+            <a href="/" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Accueil</a>
+            <a href="/posts" class="block px-3 py-2 text-primary">Articles</a>
+            <a href="/blogs/add" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Nouveau Post</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    {{-- Header --}}
+    <div class="py-12 bg-gradient-to-b from-sand-1 to-sand-2">
+      <div class="max-w-6xl mx-auto px-8">
+        <div class="text-center space-y-4">
+          <div class="w-16 h-16 mx-auto bg-primary/20 rounded-full flex justify-center items-center">
+            <svg class="w-8 h-8 fill-primary" viewBox="0 0 24 24">
+              <path d="M19 5v14H5V5h14m1.1-2H3.9c-.5 0-.9.4-.9.9v16.2c0 .4.4.9.9.9h16.2c.4 0 .9-.5.9-.9V3.9c0-.5-.5-.9-.9-.9zM11 7h6v2h-6V7zm0 4h6v2h-6v-2zm0 4h6v2h-6zM7 7h2v2H7zm0 4h2v2H7zm0 4h2v2H7z"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-4xl font-bold text-sand-12 mb-2">Tous les Articles</h1>
+            <p class="text-lg text-sand-11">Découvrez nos dernières publications et idées</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{-- Contenu principal --}}
+    <div class="max-w-6xl mx-auto px-8 py-12">
+      @if(posts.length > 0)
+        {{-- Statistiques --}}
+        <div class="mb-8 flex items-center justify-between">
+          <div class="text-sand-11">
+            <span class="font-semibold text-sand-12">{{ posts.length }}</span> 
+            article{{ posts.length > 1 ? 's' : '' }} trouvé{{ posts.length > 1 ? 's' : '' }}
+          </div>
+          <a 
+            href="/blogs/add"
+            class="inline-flex items-center gap-2 bg-primary hover:bg-primary-lighter text-white px-4 py-2 rounded-lg transition-colors font-medium"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Nouveau Post
+          </a>
+        </div>
+
+        {{-- Grille des posts --}}
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          @each(post in posts)
+            <article class="bg-white rounded-xl shadow-sm border border-sand-4 overflow-hidden hover:shadow-md transition-shadow group">
+              {{-- En-tête de la carte --}}
+              <div class="p-6 pb-4">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex-1">
+                    <h2 class="text-xl font-semibold text-sand-12 group-hover:text-primary transition-colors line-clamp-2">
+                      {{ post.title }}
+                    </h2>
+                  </div>
+                  <div class="ml-4 flex-shrink-0">
+                    <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                  </div>
+                </div>
+
+                {{-- Métadonnées --}}
+                <div class="flex items-center gap-4 text-sm text-sand-10 mb-4">
+                  <div class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    {{ post.createdAt.toFormat('dd LLL yyyy') }}
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    {{ Math.ceil(post.content.length / 200) }} min de lecture
+                  </div>
+                </div>
+              </div>
+
+              {{-- Contenu --}}
+              <div class="px-6 pb-6">
+                <p class="text-sand-11 line-clamp-3 mb-4">
+                  {{ post.content.substring(0, 150) }}{{ post.content.length > 150 ? '...' : '' }}
+                </p>
+
+                {{-- Actions --}}
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <button class="inline-flex items-center gap-1 text-sand-10 hover:text-primary transition-colors">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                      </svg>
+                      <span class="text-sm">12</span>
+                    </button>
+                    <button class="inline-flex items-center gap-1 text-sand-10 hover:text-primary transition-colors">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                      </svg>
+                      <span class="text-sm">5</span>
+                    </button>
+                  </div>
+                  
+                  <button class="inline-flex items-center gap-2 text-primary hover:text-primary-lighter font-medium transition-colors">
+                    Lire la suite
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+          @end
+        </div>
+
+        {{-- Pagination (si nécessaire) --}}
+        <div class="mt-12 flex justify-center">
+          <div class="flex items-center gap-2">
+            <button class="px-4 py-2 text-sand-11 hover:text-primary transition-colors" disabled>
+              Précédent
+            </button>
+            <span class="px-4 py-2 bg-primary text-white rounded-lg">1</span>
+            <button class="px-4 py-2 text-sand-11 hover:text-primary transition-colors" disabled>
+              Suivant
+            </button>
+          </div>
+        </div>
+
+      @else
+        {{-- État vide --}}
+        <div class="text-center py-16">
+          <div class="w-24 h-24 mx-auto bg-sand-3 rounded-full flex justify-center items-center mb-6">
+            <svg class="w-12 h-12 text-sand-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-semibold text-sand-12 mb-4">Aucun article pour le moment</h3>
+          <p class="text-sand-11 mb-8 max-w-md mx-auto">
+            Il semble qu'aucun article n'ait encore été publié. Soyez le premier à partager vos idées !
+          </p>
+          <a 
+            href="/blogs/add"
+            class="inline-flex items-center gap-2 bg-primary hover:bg-primary-lighter text-white px-6 py-3 rounded-lg transition-colors font-medium"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Créer le premier article
+          </a>
+        </div>
+      @endif
+    </div>
+
+    {{-- Footer --}}
+    <footer class="text-sm text-center [&>code]:font-medium [&>code]:text-[#a599ff] bg-sand-12 text-sand-1 relative py-6 mt-16">
+      <div class="max-w-6xl mx-auto px-8">
+        <p>Bienvenue sur mon blog personnel - Créé avec <code>AdonisJS</code> et hébergé avec ❤️</p>
+      </div>
+    </footer>
+
+    {{-- Script pour le menu mobile --}}
+    <script>
+      document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('hidden');
+      });
+    </script>
+
+    <style>
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      
+      .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    </style>
+  </body>
+</html>
