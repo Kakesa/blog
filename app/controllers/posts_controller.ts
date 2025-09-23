@@ -1,14 +1,13 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Post from '#models/blog'
-import Drive from '@adonisjs/drive/services/main'
 import { v4 as uuidv4 } from 'uuid'
-import fs from 'node:fs'
+import app from '@adonisjs/core/services/app'
 
 export default class PostsController {
   /**
    * Créer un nouvel article de blog avec image uploadée
    */
-  public async create({ request, response }: HttpContext) {
+  async create({ request, response }: HttpContext) {
     const title = request.input('title')
     const content = request.input('content')
     const imageFile = request.file('image_url')
@@ -16,19 +15,20 @@ export default class PostsController {
     let imageUrl: string | null = null
 
     if (imageFile) {
-      const fileName = `${uuidv4()}.${imageFile.extname}`
-
       if (!imageFile.isValid) {
         return response.status(400).send(imageFile.errors)
       }
 
-      if (imageFile.tmpPath) {
-        const fileStream = fs.createReadStream(imageFile.tmpPath)
+      const fileName = `${uuidv4()}.${imageFile.extname}`
 
-        await Drive.use('fs').putStream(fileName, fileStream)
+      // Déplace directement l’image dans public/uploads
+      await imageFile.move(app.publicPath('uploads'), {
+        name: fileName,
+        overwrite: true,
+      })
 
-        imageUrl = await Drive.use('fs').getUrl(fileName)
-      }
+      // Stocke l’URL relative à servir dans tes vues
+      imageUrl = `/uploads/${fileName}`
     }
 
     await Post.create({
@@ -43,7 +43,7 @@ export default class PostsController {
   /**
    * Afficher la liste des posts
    */
-  public async showPost({ view }: HttpContext) {
+  async showPost({ view }: HttpContext) {
     const posts = await Post.all()
     return view.render('pages/posts/list', { posts })
   }

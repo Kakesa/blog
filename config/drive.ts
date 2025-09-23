@@ -3,17 +3,20 @@ import app from '@adonisjs/core/services/app'
 import { defineConfig, services } from '@adonisjs/drive'
 
 const driveConfig = defineConfig({
-  default: env.get('DRIVE_DISK'),
+  // Définit le disque par défaut → lit dans .env sinon utilise "local"
+  default: env.get('DRIVE_DISK', 'local') as 'local',
 
-  /**
-   * The services object can be used to configure multiple file system
-   * services each using the same or a different driver.
-   */
   services: {
-    fs: services.fs({
-      location: app.makePath('storage'),
+    local: services.fs({
+      // Sauvegarde dans public/uploads
+      location: app.publicPath('uploads'),
+
+      // Permet de servir les fichiers directement
       serveFiles: true,
+
+      // URL publique → accessible via http://localhost:3333/uploads/xxx.jpg
       routeBasePath: '/uploads',
+
       visibility: 'public',
     }),
   },
