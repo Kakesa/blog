@@ -47,4 +47,45 @@ export default class PostsController {
     const posts = await Post.all()
     return view.render('pages/posts/list', { posts })
   }
+  // ...existing code...
+
+  /**
+   * Afficher le formulaire d'édition d'un post
+   */
+  async edit({ params, view, response }: HttpContext) {
+    const post = await Post.find(params.id)
+    if (!post) {
+      return response.status(404).send('Post non trouvé')
+    }
+    return view.render('pages/posts/edit', { post })
+  }
+
+  /**
+   * Mettre à jour un post existant
+   */
+  async update({ params, request, response }: HttpContext) {
+    const post = await Post.find(params.id)
+    if (!post) {
+      return response.status(404).send('Post non trouvé')
+    }
+
+    post.title = request.input('title')
+    post.content = request.input('content')
+
+    const imageFile = request.file('image_url')
+    if (imageFile) {
+      if (!imageFile.isValid) {
+        return response.status(400).send(imageFile.errors)
+      }
+      const fileName = `${uuidv4()}.${imageFile.extname}`
+      await imageFile.move(app.publicPath('uploads'), {
+        name: fileName,
+        overwrite: true,
+      })
+      post.image_url = `/uploads/${fileName}`
+    }
+
+    await post.save()
+    return response.redirect('/blogs')
+  }
 }

@@ -20,3 +20,7 @@ router.get('/blogs/add', (ctx) => {
   return ctx.view.render('pages/posts/add')
 })
 router.post('/posts/create', [PostsController, 'create'])
+
+// ...existing code...
+router.get('/blogs/:id/edit', [PostsController, 'edit'])
+router.post('/blogs/:id/update', [PostsController, 'update'])
