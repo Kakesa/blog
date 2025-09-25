@@ -9,7 +9,7 @@
 
 import router from '@adonisjs/core/services/router'
 const PostsController = () => import('#controllers/posts_controller')
-
+const AuthController = () => import('#controllers/auth_controller')
 // Page d'accueil
 router.on('/').render('pages/home')
 
@@ -24,3 +24,11 @@ router.post('/posts/create', [PostsController, 'create'])
 // ...existing code...
 router.get('/blogs/:id/edit', [PostsController, 'edit'])
 router.post('/blogs/:id/update', [PostsController, 'update'])
+
+router.get('/login', async ({ view }) => {
+  return view.render('auth/login')
+})
+
+router.post('/login', [AuthController, 'login'])
+router.post('/register', [AuthController, 'register'])
+router.post('/logout', [AuthController, 'logout'])
