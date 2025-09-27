@@ -30,5 +30,10 @@ router.get('/login', async ({ view }) => {
 })
 
 router.post('/login', [AuthController, 'login'])
-router.post('/register', [AuthController, 'register'])
+
+// Page d'inscription
+router.get('/register', [AuthController, 'showRegister']).as('register.show')
+
+// Traitement du formulaire
+router.post('/register', [AuthController, 'register']).as('register')
 router.post('/logout', [AuthController, 'logout'])

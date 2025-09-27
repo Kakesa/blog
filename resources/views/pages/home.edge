@@ -90,20 +90,21 @@
             <a href="/tutoriels" class="text-sand-11 hover:text-primary transition-colors font-medium">Tutoriels</a>
             <a href="/a-propos" class="text-sand-11 hover:text-primary transition-colors font-medium">À propos</a>
 
-            {{-- Gestion Auth --}}
-            @auth
-              <form action="/logout" method="POST" class="inline">
-                {{ csrfField() }}
-                <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-lighter transition-colors font-medium">
-                  Déconnexion
-                </button>
-              </form>
-            @else
-              <a href="/login" class="text-sand-11 hover:text-primary transition-colors font-medium">Connexion</a>
-              <a href="/register" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-lighter transition-colors font-medium">
-                S'inscrire
-              </a>
-            @endauth
+            {{-- Auth mobile --}}
+@if(auth?.user)
+  <form action="/logout" method="POST" class="px-3 py-2">
+    {{ csrfField() }}
+    <button type="submit" class="text-sand-11 hover:text-primary transition-colors w-full text-left">
+      Déconnexion
+    </button>
+  </form>
+@else
+  <a href="/login" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Connexion</a>
+  <a href="/register" class="block px-3 py-2 bg-primary text-white rounded-lg hover:bg-primary-lighter transition-colors">
+    S'inscrire
+  </a>
+@endif
+
 
             {{-- Ajouter --}}
             <a href="/blogs/add" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-lighter transition-colors font-medium">Ajouter</a>
@@ -127,21 +128,21 @@
             <a href="/projets" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Projets</a>
             <a href="/tutoriels" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Tutoriels</a>
             <a href="/a-propos" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">À propos</a>
+{{-- Auth mobile --}}
+@if(auth?.user)
+  <form action="/logout" method="POST" class="px-3 py-2">
+    {{ csrfField() }}
+    <button type="submit" class="text-sand-11 hover:text-primary transition-colors w-full text-left">
+      Déconnexion
+    </button>
+  </form>
+@else
+  <a href="/login" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Connexion</a>
+  <a href="/register" class="block px-3 py-2 bg-primary text-white rounded-lg hover:bg-primary-lighter transition-colors">
+    S'inscrire
+  </a>
+@endif
 
-            {{-- Auth mobile --}}
-            @auth
-              <form action="/logout" method="POST" class="px-3 py-2">
-                {{ csrfField() }}
-                <button type="submit" class="text-sand-11 hover:text-primary transition-colors w-full text-left">
-                  Déconnexion
-                </button>
-              </form>
-            @else
-              <a href="/login" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Connexion</a>
-              <a href="/register" class="block px-3 py-2 bg-primary text-white rounded-lg hover:bg-primary-lighter transition-colors">
-                S'inscrire
-              </a>
-            @endauth
           </div>
         </div>
       </div>

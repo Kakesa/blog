@@ -4,6 +4,14 @@ import { registerValidator } from '#validators/register'
 import { loginValidator } from '#validators/login'
 
 export default class AuthController {
+
+   async showLogin({ view }: HttpContext) {
+    return view.render('auth/login') // resources/views/auth/login.edge
+  }
+
+  async showRegister({ view }: HttpContext) {
+    return view.render('auth/register') // resources/views/auth/register.edge
+  }
   public async register({ request, response, auth }: HttpContext) {
     // Validation avec Vine
     const payload = await request.validateUsing(registerValidator)
