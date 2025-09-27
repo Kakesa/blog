@@ -82,13 +82,30 @@
               <span class="font-semibold text-sand-12">Mon Blog</span>
             </a>
           </div>
-          
+
           <div class="hidden md:flex items-center space-x-6">
             <a href="/" class="text-sand-11 hover:text-primary transition-colors font-medium">Accueil</a>
             <a href="/blogs" class="text-sand-11 hover:text-primary transition-colors font-medium">Articles</a>
             <a href="/projets" class="text-sand-11 hover:text-primary transition-colors font-medium">Projets</a>
             <a href="/tutoriels" class="text-sand-11 hover:text-primary transition-colors font-medium">Tutoriels</a>
             <a href="/a-propos" class="text-sand-11 hover:text-primary transition-colors font-medium">À propos</a>
+
+            {{-- Gestion Auth --}}
+            @auth
+              <form action="/logout" method="POST" class="inline">
+                {{ csrfField() }}
+                <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-lighter transition-colors font-medium">
+                  Déconnexion
+                </button>
+              </form>
+            @else
+              <a href="/login" class="text-sand-11 hover:text-primary transition-colors font-medium">Connexion</a>
+              <a href="/register" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-lighter transition-colors font-medium">
+                S'inscrire
+              </a>
+            @endauth
+
+            {{-- Ajouter --}}
             <a href="/blogs/add" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-lighter transition-colors font-medium">Ajouter</a>
           </div>
 
@@ -107,11 +124,29 @@
           <div class="py-4 space-y-2 border-t border-sand-4">
             <a href="/" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Accueil</a>
             <a href="/blogs" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Articles</a>
-       
+            <a href="/projets" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Projets</a>
+            <a href="/tutoriels" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Tutoriels</a>
+            <a href="/a-propos" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">À propos</a>
+
+            {{-- Auth mobile --}}
+            @auth
+              <form action="/logout" method="POST" class="px-3 py-2">
+                {{ csrfField() }}
+                <button type="submit" class="text-sand-11 hover:text-primary transition-colors w-full text-left">
+                  Déconnexion
+                </button>
+              </form>
+            @else
+              <a href="/login" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Connexion</a>
+              <a href="/register" class="block px-3 py-2 bg-primary text-white rounded-lg hover:bg-primary-lighter transition-colors">
+                S'inscrire
+              </a>
+            @endauth
           </div>
         </div>
       </div>
     </nav>
+
 
     <div
       class="fixed xl:absolute left-8 right-8 top-0 bottom-0 xl:inset-0 max-w-screen-xl mx-auto before:content-[''] before:[background:repeating-linear-gradient(0deg,var(--sand-5)_0_4px,transparent_0_8px)] before:absolute before:top-0 before:left-0 before:h-full before:w-px after:content-[''] after:[background:repeating-linear-gradient(0deg,var(--sand-5)_0_4px,transparent_0_8px)] after:absolute after:top-0 after:right-0 after:h-full after:w-px"
