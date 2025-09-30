@@ -25,7 +25,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare password: string
 
   @hasMany(() => Blog)
-  declare blogs: HasMany<typeof Blog>
+  declare posts: HasMany<typeof Blog>
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

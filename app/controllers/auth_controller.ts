@@ -4,13 +4,12 @@ import { registerValidator } from '#validators/register'
 import { loginValidator } from '#validators/login'
 
 export default class AuthController {
-
-   async showLogin({ view }: HttpContext) {
-    return view.render('auth/login') // resources/views/auth/login.edge
+  async showLogin({ view }: HttpContext) {
+    return view.render('auth/login')
   }
 
   async showRegister({ view }: HttpContext) {
-    return view.render('auth/register') // resources/views/auth/register.edge
+    return view.render('auth/register')
   }
   public async register({ request, response, auth }: HttpContext) {
     // Validation avec Vine
@@ -22,12 +21,15 @@ export default class AuthController {
     return response.redirect('/')
   }
 
-  public async login({ request, response, auth }: HttpContext) {
+  public async login({ request, response, auth, session }: HttpContext) {
     const { email, password } = await request.validateUsing(loginValidator)
 
     try {
       const user = await User.verifyCredentials(email, password)
       await auth.use('web').login(user)
+
+      // Ajoutez un message flash
+      session.flash('success', 'Vous êtes connecté avec succès !')
       return response.redirect('/')
     } catch (error) {
       console.error(error)
