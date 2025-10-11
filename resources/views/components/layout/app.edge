@@ -3,7 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@!section('title', 'Mon Blog')</title>
+    <title>
+      {{ title || "YMon Blog" }}
+    </title>
 
     <link rel="preconnect" href="https://fonts.bunny.net" />
     <link
@@ -70,12 +72,11 @@
     @include('partials/navbar')
 
     {{-- Contenu dynamique --}}
-    <main>
-      @!section('content')
-    </main>
+    {{{ await $slots.main() }}}
 
     {{-- Footer --}}
    @include('partials/footer')
+   
     {{-- Script pour le menu mobile --}}
     <script>
       document
