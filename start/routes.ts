@@ -43,6 +43,10 @@ router
 router
   .post('/blogs/:id/update', (ctx) => new PostsController().update(ctx))
   .middleware([middleware.auth()])
+router
+  .post('/blogs/:id/delete', (ctx) => new PostsController().delete(ctx))
+  .middleware([middleware.auth()])
+router.get('/blogs/:id', (ctx) => new PostsController().detail(ctx))
 
 // -------------------
 // Auth

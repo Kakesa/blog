@@ -15,6 +15,18 @@ export default class PostsController {
   }
 
   /**
+   * 🔍 Afficher le détail d’un post (avec auteur)
+   */
+  async detail({ params, view, response }: HttpContext) {
+    const post = await Blog.query().where('id', params.id).preload('user').first()
+
+    if (!post) {
+      return response.status(404).send('Post non trouvé')
+    }
+
+    return view.render('pages/posts/detail', { post })
+  }
+  /**
    * Afficher le formulaire de création d’un post
    */
   async createForm({ view }: HttpContext) {

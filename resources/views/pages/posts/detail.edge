@@ -1,0 +1,21 @@
+@layout.app({ title: "Détails de l'article" })
+@slot('main')
+<div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow">
+  <h1 class="text-3xl font-bold mb-4">{{ post.title }}</h1>
+  <p class="text-gray-600 mb-2">Par <strong>{{ post.user?.name || 'Auteur inconnu' }}</strong></p>
+  <p class="text-gray-400 mb-6">{{ post.createdAt.toFormat('dd LLL yyyy, HH:mm') }}</p>
+
+  @if (post.imageUrl)
+    <img src="{{ post.imageUrl }}" alt="{{ post.title }}" class="rounded-lg mb-6 w-full object-cover h-64">
+  @endif
+
+  <div class="prose">
+    {{ post.content }}
+  </div>
+
+  <div class="mt-8">
+    <a href="/blogs" class="text-blue-600 hover:underline">← Retour aux articles</a>
+  </div>
+</div>
+@endslot
+@end

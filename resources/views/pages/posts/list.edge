@@ -157,12 +157,13 @@
                 <p class="text-sand-11 line-clamp-3 mb-4">
                   {{ post.content.substring(0, 150) }}{{ post.content.length > 150 ? '...' : '' }}
                 </p>
-                <a href="/posts/{{ post.id }}" class="inline-flex items-center gap-2 text-primary hover:text-primary-lighter font-medium transition-colors">
+                <a href="/blogs/{{ post.id }}" class="inline-flex items-center gap-2 text-primary hover:text-primary-lighter font-medium transition-colors">
                   Lire la suite
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </a>
+
               </div>
             </article>
           @end
