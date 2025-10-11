@@ -5,23 +5,24 @@ import app from '@adonisjs/core/services/app'
 
 export default class PostsController {
   /**
-   * Afficher la liste des posts
+   * Afficher la liste des posts avec leurs auteurs
    */
   async showPost({ view }: HttpContext) {
-    const posts = await Blog.all()
+    // 🔥 On charge la relation "user" pour accéder à son nom et son email
+    const posts = await Blog.query().preload('user')
+
     return view.render('pages/posts/list', { posts })
   }
 
   /**
    * Afficher le formulaire de création d’un post
-   * Middleware `auth` protège déjà l'accès
    */
   async createForm({ view }: HttpContext) {
     return view.render('pages/posts/add')
   }
 
   /**
-   * Créer un nouvel article de blog avec image uploadée
+   * Créer un nouvel article avec upload d’image
    */
   async create({ request, response, auth }: HttpContext) {
     const title = request.input('title')
@@ -36,30 +37,26 @@ export default class PostsController {
       }
 
       const fileName = `${uuidv4()}.${imageFile.extname}`
-
-      // Déplace l’image dans public/uploads
       await imageFile.move(app.publicPath('uploads'), {
         name: fileName,
         overwrite: true,
       })
 
-      // Stocke l’URL relative
       imageUrl = `/uploads/${fileName}`
     }
 
-    // Créer le post avec l'ID de l'utilisateur connecté
     await Blog.create({
       title,
       content,
-      imageUrl: imageUrl || undefined,
-      userId: auth.user!.id, // le `!` garantit que user est défini grâce au middleware
+      imageUrl,
+      userId: auth.user!.id,
     })
 
     return response.redirect('/blogs')
   }
 
   /**
-   * Afficher le formulaire d’édition d’un post
+   * Afficher le formulaire d’édition
    */
   async edit({ params, view, response, auth }: HttpContext) {
     const post = await Blog.find(params.id)
@@ -67,7 +64,6 @@ export default class PostsController {
       return response.status(404).send('Post non trouvé')
     }
 
-    // Vérifie que l’utilisateur connecté est bien le propriétaire
     if (post.userId !== auth.user!.id) {
       return response.status(403).send('Accès refusé')
     }
@@ -76,7 +72,7 @@ export default class PostsController {
   }
 
   /**
-   * Mettre à jour un post existant
+   * Mettre à jour un article
    */
   async update({ params, request, response, auth }: HttpContext) {
     const post = await Blog.find(params.id)
@@ -96,6 +92,7 @@ export default class PostsController {
       if (!imageFile.isValid) {
         return response.status(400).send(imageFile.errors)
       }
+
       const fileName = `${uuidv4()}.${imageFile.extname}`
       await imageFile.move(app.publicPath('uploads'), {
         name: fileName,

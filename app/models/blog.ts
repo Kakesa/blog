@@ -16,11 +16,14 @@ export default class Blog extends BaseModel {
   @column()
   declare imageUrl: string | null
 
-  // Clé étrangère (user_id en DB)
+  // Clé étrangère vers l'utilisateur
   @column()
   declare userId: number
 
-  @belongsTo(() => User)
+  // Relation : chaque blog appartient à un utilisateur
+  @belongsTo(() => User, {
+    foreignKey: 'userId',
+  })
   declare user: BelongsTo<typeof User>
 
   @column.dateTime({ autoCreate: true })

@@ -24,12 +24,15 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ serializeAs: null })
   declare password: string
 
-  @hasMany(() => Blog)
-  declare posts: HasMany<typeof Blog>
+  // Relation : un utilisateur peut avoir plusieurs blogs
+  @hasMany(() => Blog, {
+    foreignKey: 'userId',
+  })
+  declare blogs: HasMany<typeof Blog>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime
 }
