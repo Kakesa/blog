@@ -194,9 +194,15 @@
                 </div>
 
                 {{-- Nom de l'utilisateur --}}
-                <div class="text-sm text-sand-10">
-                  Posté par <strong>{{ post.user.fullName }}</strong>
-                </div>
+                  @if(auth.user)
+                    <div class="text-sm text-sand-10">
+                      Posté par <strong>{{ auth.user.full_name || auth.user.name }}</strong>
+                    </div>
+                  @else
+                    <div class="text-sm text-sand-10">
+                      Posté par <strong>Invité</strong>
+                    </div>
+                  @endif  
               </div>
 
               {{-- Contenu --}}

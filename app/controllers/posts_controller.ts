@@ -2,7 +2,6 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Blog from '#models/blog'
 import { v4 as uuidv4 } from 'uuid'
 import app from '@adonisjs/core/services/app'
-import { schema, rules } from '@adonisjs/validator'
 
 export default class PostsController {
   /**
@@ -25,41 +24,40 @@ export default class PostsController {
    * Créer un nouvel article de blog avec image uploadée
    */
   async create({ request, response, auth }: HttpContext) {
-    const validationSchema = schema.create({
-      title: schema.string({ trim: true }, [rules.minLength(5)]),
-      content: schema.string({ trim: true }, [rules.minLength(20)]),
-      image_url: schema.file.optional({
-        size: '2mb',
-        extnames: ['jpg', 'jpeg', 'png', 'gif'],
-      }),
-    })
-
-    const validatedData = await request.validate({ schema: validationSchema })
-
-    const title = validatedData.title
-    const content = validatedData.content
-    const imageFile = validatedData.image_url
+    const title = request.input('title')
+    const content = request.input('content')
+    const imageFile = request.file('image_url')
 
     let imageUrl: string | null = null
 
     if (imageFile) {
+      if (!imageFile.isValid) {
+        return response.status(400).send(imageFile.errors)
+      }
+
       const fileName = `${uuidv4()}.${imageFile.extname}`
+
+      // Déplace l’image dans public/uploads
       await imageFile.move(app.publicPath('uploads'), {
         name: fileName,
         overwrite: true,
       })
+
+      // Stocke l’URL relative
       imageUrl = `/uploads/${fileName}`
     }
 
+    // Créer le post avec l'ID de l'utilisateur connecté
     await Blog.create({
       title,
       content,
       imageUrl: imageUrl || undefined,
-      userId: auth.user!.id,
+      userId: auth.user!.id, // le `!` garantit que user est défini grâce au middleware
     })
 
     return response.redirect('/blogs')
   }
+
   /**
    * Afficher le formulaire d’édition d’un post
    */
