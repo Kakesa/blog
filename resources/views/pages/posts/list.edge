@@ -150,7 +150,7 @@
           </a>
         </div>
 
-        {{-- Grille des posts --}}
+       {{-- Grille des posts --}}
         <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           @each(post in posts)
             <article class="bg-white rounded-xl shadow-sm border border-sand-4 overflow-hidden hover:shadow-md transition-shadow group">
@@ -191,6 +191,11 @@
                     </svg>
                     {{ Math.ceil(post.content.length / 200) }} min de lecture
                   </div>
+                </div>
+
+                {{-- Nom de l'utilisateur --}}
+                <div class="text-sm text-sand-10">
+                  Posté par <strong>{{ post.user.fullName }}</strong>
                 </div>
               </div>
 
@@ -270,7 +275,9 @@
     {{-- Footer --}}
     <footer class="text-sm text-center [&>code]:font-medium [&>code]:text-[#a599ff] bg-sand-12 text-sand-1 relative py-6 mt-16">
       <div class="max-w-6xl mx-auto px-8">
-        <p>Bienvenue sur mon blog personnel - Créé avec <code>AdonisJS</code> et hébergé avec ❤️</p>
+        <p>Design By 
+          <a href="https://espoir-sorf.onrender.com">Espoir-Soft</a>
+        </p>
       </div>
     </footer>
 
