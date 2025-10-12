@@ -13,6 +13,7 @@ import { middleware } from '#start/kernel'
 // Import direct des contrôleurs (solution la plus simple et TS-friendly)
 import PostsController from '#controllers/posts_controller'
 import AuthController from '#controllers/auth_controller'
+import CommentsController from '#controllers/comments_controller'
 
 // -------------------
 // Accueil
@@ -46,7 +47,17 @@ router
 router
   .post('/blogs/:id/delete', (ctx) => new PostsController().delete(ctx))
   .middleware([middleware.auth()])
-router.get('/blogs/:id', (ctx) => new PostsController().detail(ctx))
+router.get('/blogs/:id', (ctx) => new PostsController().detail(ctx)).as('blogs.detail')
+
+// -------------------
+// Comments
+// -------------------
+router
+  .post('/blogs/:id/comments', async (ctx) => {
+    return new CommentsController().addComment(ctx)
+  })
+  // 👉 Si tu veux que seuls les utilisateurs connectés puissent commenter :
+  .middleware([middleware.auth()])
 
 // -------------------
 // Auth
