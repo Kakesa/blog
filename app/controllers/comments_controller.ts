@@ -4,40 +4,60 @@ import Blog from '#models/blog'
 
 export default class CommentsController {
   /**
-   * Ajouter un commentaire à un post
+   * Ajouter un commentaire ou une réponse
    */
-  async addComment({ params, request, response, auth }: HttpContext) {
+  async addComment({ params, request, response, auth, session }: HttpContext) {
+    const post = await Blog.find(params.id)
+    if (!post) {
+      session.flash({ error: 'Article non trouvé' })
+      return response.redirect('back')
+    }
+
+    const content = request.input('content')
+    const parentId = request.input('parentId') // peut être null
+
+    if (!content || content.trim() === '') {
+      session.flash({ error: 'Le commentaire ne peut pas être vide' })
+      return response.redirect('back')
+    }
+
+    await Comment.create({
+      content,
+      blogId: post.id,
+      userId: auth.user?.id ?? null,
+      parentId: parentId ?? null, // assignation de la réponse
+    })
+
+    session.flash({
+      success: parentId ? 'Réponse ajoutée !' : 'Commentaire ajouté avec succès !',
+    })
+
+    return response.redirect('back')
+  }
+
+  /**
+   * Supprimer un commentaire ou une réponse
+   */
+  async delete({ params, auth, response, session }: HttpContext) {
     try {
-      const post = await Blog.find(params.id)
-      if (!post) {
-        return response.status(404).send('Article non trouvé')
+      const comment = await Comment.find(params.id)
+      if (!comment) {
+        session.flash({ error: 'Commentaire introuvable' })
+        return response.redirect('back')
       }
 
-      const content = request.input('content')
-      if (!content || content.trim() === '') {
-        return response.status(400).send('Le commentaire ne peut pas être vide')
+      if (comment.userId !== auth.user?.id) {
+        session.flash({ error: 'Vous n’êtes pas autorisé à supprimer ce commentaire' })
+        return response.redirect('back')
       }
 
-      // ✅ Création du commentaire
-      await Comment.create({
-        content,
-        blogId: post.id,
-        userId: auth.user ? auth.user.id : null, // autorise ou non l’anonyme
-      })
-
-      // ✅ On recharge le post avec les commentaires et les users préchargés
-      // (pour que la vue "detail" ne plante pas)
-      const reloadedPost = await Blog.query()
-        .where('id', post.id)
-        .preload('user')
-        .preload('comments', (query) => query.preload('user'))
-        .firstOrFail()
-
-      // ✅ On repasse par la même vue que dans PostsController.detail()
-      return response.redirect(`/blogs/${post.id}`)
+      await comment.delete()
+      session.flash({ success: 'Commentaire supprimé avec succès' })
+      return response.redirect('back')
     } catch (error) {
-      console.error('Erreur lors de l’ajout du commentaire :', error)
-      return response.status(500).send('Erreur interne du serveur')
+      console.error('Erreur lors de la suppression du commentaire :', error)
+      session.flash({ error: 'Erreur interne du serveur' })
+      return response.redirect('back')
     }
   }
 }

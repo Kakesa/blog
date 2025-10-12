@@ -1,8 +1,9 @@
 import { DateTime } from 'luxon'
 import Blog from '#models/blog'
 import User from '#models/user'
-import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
+import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
 
 export default class Comment extends BaseModel {
   @column({ isPrimary: true })
@@ -10,6 +11,10 @@ export default class Comment extends BaseModel {
 
   @column()
   declare content: string
+
+  // ✅ Ajouter parentId
+  @column()
+  public parentId: number | null | undefined
 
   @column({ columnName: 'blog_id' })
   declare blogId: number
@@ -26,6 +31,9 @@ export default class Comment extends BaseModel {
     foreignKey: 'userId',
   })
   declare user: BelongsTo<typeof User>
+
+  @hasMany(() => Comment, { foreignKey: 'parentId' })
+  public replies: HasMany<typeof Comment> | undefined
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

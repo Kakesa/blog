@@ -1,15 +1,15 @@
-@layout.app({ title: "Détails de l'article" })
+@layout.app({ title: "Détails de l'article" }) 
 @slot('main')
 
 <div class="max-w-4xl mx-auto bg-white p-8 md:p-10 rounded-3xl shadow-2xl mt-10 mb-20 border border-gray-100 transition-all duration-300 hover:shadow-3xl">
 
     @if(post)
-        <!-- Titre de l'article -->
+        <!-- Titre -->
         <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-tight">
             {{ post.title }}
         </h1>
 
-        <!-- Métadonnées (Auteur et Date) -->
+        <!-- Auteur et date -->
         <div class="flex flex-col md:flex-row md:items-center justify-between text-sm text-gray-500 mb-6 border-b border-gray-100 pb-4">
             <div class="flex items-center space-x-3">
                 @if(post.user)
@@ -29,81 +29,90 @@
             </div>
         </div>
 
-        <!-- Image de couverture -->
+        <!-- Image -->
         @if(post.imageUrl)
             <div class="overflow-hidden rounded-2xl mb-8">
                 <img src="{{ post.imageUrl }}" alt="{{ post.title }}" class="w-full object-cover max-h-96 shadow-xl transition duration-500 transform hover:scale-105 hover:shadow-2xl">
             </div>
         @endif
 
-        <!-- Tags / Catégories -->
-        @if(post.tags && post.tags.length)
-            <div class="mb-6 flex flex-wrap gap-2">
-                @each(tag in post.tags)
-                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">{{ tag }}</span>
-                @end
-            </div>
-        @endif
-
-        <!-- Contenu de l'article -->
+        <!-- Contenu -->
         <div class="prose prose-lg prose-gray max-w-none text-gray-800 leading-relaxed space-y-8">
             {{ post.content }}
-        </div>
-
-        <!-- Boutons de partage -->
-        <div class="mt-10 flex items-center space-x-4">
-            <p class="text-gray-500 font-semibold">Partager :</p>
-            <a href="#" class="text-blue-600 hover:text-blue-800 transition duration-150">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="text-blue-400 hover:text-blue-600 transition duration-150">
-                <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="text-pink-500 hover:text-pink-700 transition duration-150">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="#" class="text-gray-700 hover:text-black transition duration-150">
-                <i class="fas fa-link"></i>
-            </a>
-        </div>
-
-        <!-- Lien de retour -->
-        <div class="mt-12 pt-6 border-t border-gray-200">
-            <a href="/blogs" class="inline-flex items-center text-base font-semibold text-blue-600 hover:text-blue-700 transition duration-150 transform hover:-translate-x-1">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Retour aux articles
-            </a>
         </div>
 
         <!-- Section Commentaires -->
         <div class="mt-16">
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Commentaires</h2>
 
-            @if(post.comments && post.comments.length)
-            <div class="space-y-6">
-                @each(comment in post.comments)
-                <div class="bg-gray-50 p-4 rounded-xl shadow-sm">
-                    <div class="flex items-center mb-2">
-                        <div>
-                            <p class="font-semibold text-gray-700">{{ comment.user?.name ?? 'Utilisateur' }}</p>
-                            <p class="text-gray-400 text-xs">{{ comment.createdAt.toFormat('dd LLL yyyy, HH:mm') }}</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-800">{{ comment.content }}</p>
+            @if(session.get('error'))
+                <div class="bg-red-100 text-red-700 px-4 py-3 rounded mb-4 mt-4">
+                    {{ session.get('error') }}
                 </div>
-                @end
-            </div>
-            @else
-            <p class="text-gray-500">Aucun commentaire pour le moment. Soyez le premier à commenter !</p>
+            @endif
+            @if(session.get('success'))
+                <div class="bg-green-100 text-green-700 px-4 py-3 rounded mb-4 mt-4">
+                    {{ session.get('success') }}
+                </div>
             @endif
 
-            <!-- Formulaire de commentaire -->
+            @if(post.comments && post.comments.length)
+                <div class="space-y-6">
+                    @each(comment in post.comments)
+                        <div class="comment-item bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 p-5 flex flex-col gap-4">
+                            <div class="flex gap-4">
+                                <img src="{{ comment.user?.avatarUrl ?? '/default-avatar.png' }}" alt="{{ comment.user?.name ?? 'Utilisateur' }}" class="w-12 h-12 rounded-full object-cover border border-gray-200">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <p class="font-semibold text-gray-700">{{ comment.user?.name ?? 'Utilisateur' }}</p>
+                                        <span class="text-gray-400 text-xs">{{ comment.createdAt.toFormat('dd LLL yyyy, HH:mm') }}</span>
+                                    </div>
+                                    <p class="text-gray-800">{{ comment.content }}</p>
+
+                                    <!-- Répondre -->
+                                    <button type="button" class="text-sm text-blue-600 hover:text-blue-700 mt-2 reply-toggle" data-comment-id="{{ comment.id }}">
+                                        Répondre
+                                    </button>
+
+                                    <form action="/blogs/{{ post.id }}/comments" method="POST" class="reply-form mt-2 space-y-2 hidden" data-parent-id="{{ comment.id }}">
+                                        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                                        <input type="hidden" name="parentId" value="{{ comment.id }}">
+                                        <textarea name="content" placeholder="Écrire une réponse..." class="w-full p-3 border border-gray-200 rounded-2xl resize-none focus:ring-2 focus:ring-blue-300 focus:outline-none" rows="3"></textarea>
+                                        <button type="submit" disabled class="bg-blue-400 cursor-not-allowed text-white px-4 py-2 rounded-2xl font-semibold transition duration-150">
+                                            Poster la réponse
+                                        </button>
+                                    </form>
+
+                                    @if(comment.replies && comment.replies.length)
+                                        <div class="mt-4 space-y-4">
+                                            @each(reply in comment.replies)
+                                                <div class="flex gap-3 ml-6">
+                                                    <img src="{{ reply.user?.avatarUrl ?? '/default-avatar.png' }}" alt="{{ reply.user?.name ?? 'Utilisateur' }}" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                                    <div class="flex-1 bg-gray-50 p-3 rounded-xl shadow-sm border-l-4 border-blue-200">
+                                                        <div class="flex items-center justify-between mb-1">
+                                                            <p class="font-semibold text-gray-700">{{ reply.user?.name ?? 'Utilisateur' }}</p>
+                                                            <span class="text-gray-400 text-xs">{{ reply.createdAt.toFormat('dd LLL yyyy, HH:mm') }}</span>
+                                                        </div>
+                                                        <p class="text-gray-800">{{ reply.content }}</p>
+                                                    </div>
+                                                </div>
+                                            @end
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @end
+                </div>
+            @else
+                <p class="text-gray-500">Aucun commentaire pour le moment. Soyez le premier à commenter !</p>
+            @endif
+
+            <!-- Formulaire principal -->
             <form action="/blogs/{{ post.id }}/comments" method="POST" class="mt-6 space-y-4">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <textarea name="content" placeholder="Écrire un commentaire..." class="w-full p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-blue-300 focus:outline-none" rows="4"></textarea>
-                <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition duration-150">
+                <textarea id="commentContent" name="content" placeholder="Écrire un commentaire..." class="w-full p-4 border border-gray-200 rounded-2xl resize-none focus:ring-2 focus:ring-blue-300 focus:outline-none" rows="4"></textarea>
+                <button id="submitComment" type="submit" disabled class="bg-blue-400 cursor-not-allowed text-white px-6 py-3 rounded-2xl font-semibold transition duration-150">
                     Poster le commentaire
                 </button>
             </form>
@@ -111,8 +120,50 @@
     @else
         <p>Article introuvable.</p>
     @endif
-
 </div>
+
+<script>
+    // Activer/Désactiver bouton du formulaire principal
+    const mainTextarea = document.getElementById('commentContent')
+    const mainButton = document.getElementById('submitComment')
+    mainTextarea.addEventListener('input', () => {
+        if(mainTextarea.value.trim().length > 0) {
+            mainButton.disabled = false
+            mainButton.classList.remove('bg-blue-400', 'cursor-not-allowed')
+            mainButton.classList.add('bg-blue-600')
+        } else {
+            mainButton.disabled = true
+            mainButton.classList.remove('bg-blue-600')
+            mainButton.classList.add('bg-blue-400', 'cursor-not-allowed')
+        }
+    })
+
+    // Toggle formulaire de réponse
+    document.querySelectorAll('.reply-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.commentId
+            const form = document.querySelector(`.reply-form[data-parent-id="${id}"]`)
+            form.classList.toggle('hidden')
+        })
+    })
+
+    // Activer/Désactiver boutons des réponses
+    document.querySelectorAll('.reply-form').forEach(form => {
+        const textarea = form.querySelector('textarea')
+        const btn = form.querySelector('button')
+        textarea.addEventListener('input', () => {
+            if(textarea.value.trim().length > 0) {
+                btn.disabled = false
+                btn.classList.remove('bg-blue-400', 'cursor-not-allowed')
+                btn.classList.add('bg-blue-600')
+            } else {
+                btn.disabled = true
+                btn.classList.remove('bg-blue-600')
+                btn.classList.add('bg-blue-400', 'cursor-not-allowed')
+            }
+        })
+    })
+</script>
 
 @endslot
 @end

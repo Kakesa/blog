@@ -18,8 +18,6 @@ export default class PostsController {
    */
   async detail({ params, view, response }: HttpContext) {
     try {
-      console.log('🟦 ID du blog reçu :', params.id)
-
       const post = await Blog.query()
         .where('id', params.id)
         .preload('user')
