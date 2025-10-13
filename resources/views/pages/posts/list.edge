@@ -91,9 +91,17 @@
         <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           @each(post in posts)
             <article class="bg-white rounded-xl shadow-sm border border-sand-4 overflow-hidden hover:shadow-md transition-shadow group">
-              @if(post.imageUrl)
-                <img src="{{ post.imageUrl }}" alt="Image de {{ post.title }}" class="w-full h-48 object-cover"/>
-              @endif
+              
+              {{-- Média : image ou vidéo --}}
+                @if(post.videoUrl)
+                  <video controls class="w-full h-48 object-cover">
+                    <source src="{{ post.videoUrl }}" type="video/mp4">
+                    Votre navigateur ne supporte pas la lecture de vidéos.
+                  </video>
+                @elseif(post.imageUrl)
+                  <img src="{{ post.imageUrl }}" alt="Image de {{ post.title }}" class="w-full h-48 object-cover"/>
+                @endif
+
 
               <div class="p-6 pb-4">
                 <h2 class="text-xl font-semibold text-sand-12 group-hover:text-primary transition-colors line-clamp-2">

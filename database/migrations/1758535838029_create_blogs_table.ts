@@ -5,26 +5,24 @@ export default class CreateBlogsTable extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      // Identifiant primaire
       table.increments('id').primary()
-
-      // Champs du blog
       table.string('title', 255).notNullable()
       table.text('content').notNullable()
+
+      // 🖼️ URL de l'image (optionnelle)
       table.string('image_url').nullable()
 
-      // Relation vers l'utilisateur (clé étrangère)
+      // 🎞️ URL de la vidéo (optionnelle)
+      table.string('video_url').nullable()
+
       table
         .integer('user_id')
         .unsigned()
         .references('id')
         .inTable('users')
         .onDelete('CASCADE')
-        .notNullable() // toujours lié à un utilisateur
-
-      // Dates
+        .notNullable()
       table.timestamp('created_at', { useTz: true }).notNullable().defaultTo(this.now())
-
       table.timestamp('updated_at', { useTz: true }).notNullable().defaultTo(this.now())
     })
   }

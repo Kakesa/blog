@@ -14,23 +14,24 @@ export default class Blog extends BaseModel {
   @column()
   declare content: string
 
+  // 📸 URL de l'image (optionnelle)
   @column()
   declare imageUrl: string | null
+
+  // 🎞️ URL de la vidéo (optionnelle)
+  @column()
+  declare videoUrl: string | null
 
   // 🔗 Clé étrangère vers User
   @column()
   declare userId: number
 
-  // 🧍 Chaque article appartient à un utilisateur
-  @belongsTo(() => User, {
-    foreignKey: 'userId',
-  })
+  // 👤 Chaque article appartient à un utilisateur
+  @belongsTo(() => User, { foreignKey: 'userId' })
   declare user: BelongsTo<typeof User>
 
-  // 💬 Chaque article a plusieurs commentaires
-  @hasMany(() => Comment, {
-    foreignKey: 'blogId',
-  })
+  // 💬 Chaque article peut avoir plusieurs commentaires
+  @hasMany(() => Comment, { foreignKey: 'blogId' })
   declare comments: HasMany<typeof Comment>
 
   @column.dateTime({ autoCreate: true })
