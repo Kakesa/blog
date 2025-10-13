@@ -1,34 +1,5 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Créer un post - Mon Blog</title>
-
-  <link rel="preconnect" href="https://fonts.bunny.net" />
-  <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ["Instrument Sans", "sans-serif"] },
-          colors: {
-            primary: { DEFAULT: "#5A45FF", lighter: "#a599ff" },
-            sand: {
-              1: "#fdfdfc", 2: "#f9f9f8", 3: "#f1f0ef", 4: "#e9e8e6",
-              5: "#e2e1de", 6: "#dad9d6", 7: "#cfceca", 8: "#bcbbb5",
-              9: "#8d8d86", 10: "#82827c", 11: "#63635e", 12: "#21201c"
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
+@layout.app({ title: "Détails de l'article" }) 
+@slot('main')
 
 <body class="min-h-screen w-screen font-sans bg-sand-1 text-sand-12">
   {{-- Navbar --}}
@@ -76,8 +47,5 @@
     </form>
   </main>
 
-  <footer class="text-center bg-sand-12 text-sand-1 py-3 text-sm">
-    Créé avec <code>AdonisJS</code> — ❤️ 2025
-  </footer>
-</body>
-</html>
+  @endslot
+@end

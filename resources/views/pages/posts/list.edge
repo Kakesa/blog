@@ -1,71 +1,5 @@
-<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Liste des Posts - Mon Blog</title>
-    <link rel="preconnect" href="https://fonts.bunny.net" />
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: { sans: ["Instrument Sans", "sans-serif"] },
-            colors: {
-              primary: { DEFAULT: "#5A45FF", lighter: "#a599ff" },
-              sand: {
-                1: "#fdfdfc", 2: "#f9f9f8", 3: "#f1f0ef", 4: "#e9e8e6",
-                5: "#e2e1de", 6: "#dad9d6", 7: "#cfceca", 8: "#bcbbb5",
-                9: "#8d8d86", 10: "#82827c", 11: "#63635e", 12: "#21201c"
-              }
-            }
-          }
-        }
-      };
-    </script>
-  </head>
-
-  <body class="min-h-screen w-screen font-sans bg-sand-1">
-    {{-- Barre de navigation --}}
-    <nav class="bg-white/80 backdrop-blur-sm border-b border-sand-4 sticky top-0 z-50">
-      <div class="max-w-screen-xl mx-auto px-8">
-        <div class="flex justify-between items-center h-16">
-          <a href="/" class="flex items-center space-x-2">
-            <div class="w-8 h-8 bg-primary/20 rounded-lg flex justify-center items-center">
-              <svg class="w-5 h-5 fill-primary" viewBox="0 0 24 24">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-              </svg>
-            </div>
-            <span class="font-semibold text-sand-12">Mon Blog</span>
-          </a>
-
-          <div class="hidden md:flex items-center space-x-6">
-            <a href="/" class="text-sand-11 hover:text-primary transition-colors font-medium">Accueil</a>
-            <a href="/blogs" class="text-primary font-medium">Articles</a>
-            <a href="/blogs/add" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-lighter transition-colors font-medium">
-              Nouveau Post
-            </a>
-          </div>
-
-          <button type="button" class="md:hidden text-sand-11 hover:text-primary" id="mobile-menu-button">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-        </div>
-
-        <div class="md:hidden hidden" id="mobile-menu">
-          <div class="py-4 space-y-2 border-t border-sand-4">
-            <a href="/" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Accueil</a>
-            <a href="/blogs" class="block px-3 py-2 text-primary">Articles</a>
-            <a href="/blogs/add" class="block px-3 py-2 text-sand-11 hover:text-primary transition-colors">Nouveau Post</a>
-          </div>
-        </div>
-      </div>
-    </nav>
-
+@layout.app({ title: "Détails de l'article" }) 
+@slot('main')
     {{-- Header --}}
     <header class="py-12 bg-gradient-to-b from-sand-1 to-sand-2 text-center">
       <h1 class="text-4xl font-bold text-sand-12 mb-2">Tous les Articles</h1>
@@ -147,28 +81,5 @@
       @endif
     </main>
 
-    {{-- Pied de page --}}
-    @include('partials/footer')
-
-    <script>
-      document.getElementById("mobile-menu-button").addEventListener("click", function () {
-        document.getElementById("mobile-menu").classList.toggle("hidden");
-      });
-    </script>
-
-    <style>
-      .line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
-      .line-clamp-3 {
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
-    </style>
-  </body>
-</html>
+ @endslot
+@end
