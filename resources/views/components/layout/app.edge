@@ -73,11 +73,12 @@
     @include('partials/navbar')
 
     {{-- Contenu dynamique --}}
-    {{{ await $slots.main() }}}
+    <main class="pt-16 md:pt-16 pb-20 min-h-screen">
+        {{{ await $slots.main() }}}
+    </main>
 
     {{-- Footer --}}
-   @include('partials/footer')
-   
+    @include('partials/footer')
     {{-- Script pour le menu mobile --}}
     <script>
       document
